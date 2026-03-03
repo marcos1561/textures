@@ -1,10 +1,9 @@
 import numpy as np
 from numba import guvectorize
 
-# from texture.grids import RegularGrid
 from grids import RegularGrid
-from texture import grids_mathieu
-from texture.links import *
+from textures import grids_mathieu
+from textures.links import *
 
 def mine_to_mathieu_grid(grid: RegularGrid):
     return grids_mathieu.RegularGrid(
@@ -574,11 +573,11 @@ def statistical_relative_deformations(M,C,T):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     
-    import texture
-    from texture import grids
+    import textures
+    from textures import grids
     import numpy as np
     
-    from texture import display
+    from textures import display
 
     np.random.seed(43)
 

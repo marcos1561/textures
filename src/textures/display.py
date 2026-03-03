@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.collections import EllipseCollection, LineCollection
 
-from texture import square_from_triangular, errors
+from textures import square_from_triangular, errors
 
 def draw_links(ax: Axes, points, links, **kwargs):
     kwargs_default = {'color': 'r'}

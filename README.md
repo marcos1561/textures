@@ -1,16 +1,16 @@
-# Texture
+# Textures
 A Python package to compute quantify, from a set of points and links between them, a texture and its time evolution.
 
-Implementation of F. Graner, B. Dollet, C. Raufaste, and P. Marmottant, ***Di**screte **r**earranging **di**sordered **p**atterns, part I: Robust statistical tools in two or three dimensions* **Eur. Phys. J. E** 25, 349-369 (2008) DOI [10.1140/epje/i2007-10298-8](https://doi.org/10.1140/epje/i2007-10298-8)
+Implementation of F. Graner, B. Dollet, C. Raufaste, and P. Marmottant, Discrete rearranging disordered patterns, part I: Robust statistical tools in two or three dimensions* **Eur. Phys. J. E** 25, 349-369 (2008) DOI [10.1140/epje/i2007-10298-8](https://doi.org/10.1140/epje/i2007-10298-8)
 
 ## Installation
 ```bash
-pip install -e "git+https://github.com/marcos1561/texture.git/#egg=texture"
+pip install -e "git+https://github.com/marcos1561/textures.git/#egg=textures"
 ```
 
 ## Calculators
 One can use core functions (such as `bin_texture_sum()`) to calculate tools, but this is not convenient. To provide
-a better user interface, calculators are provided inside the module `texture.calculators`.
+a better user interface, calculators are provided inside the module `textures.calculators`.
 
 ### FramesArray Calculator
 If you have a list of frames (a frame is a list of points) and want to do an average between all frames, `FramesArray` is the
@@ -19,7 +19,7 @@ for every grid element of the grid created, and the resulting texture is shown.
 ```python
 import matplotlib.pyplot as plt
 import grids
-from texture import calculators, links, display
+from textures import calculators, links, display
 
 # suppose i've loaded frames1 and frames2 here
 
@@ -47,7 +47,7 @@ links will be calculated on the fly and the respective selected quantity (M, B o
 The fallowing example initializes the playground with some points in both frames, configured to show the topological derivative:
 
 ```python
-from texture import playground
+from textures import playground
 
 app = playground.PlayGround(
     init_points_1=[

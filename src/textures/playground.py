@@ -7,7 +7,7 @@ from matplotlib.collections import LineCollection
 from matplotlib.artist import Artist
 from matplotlib.text import Text
 
-import texture
+import textures
 import traceback
 from grids import RegularGrid
 
@@ -404,7 +404,7 @@ if __name__ == "__main__":
             [0, 0.5],
             [0, -0.5],
         ],
-        matrix_type=MatrixType.topology,
+        matrix_type=MatrixType.geometry,
         show_uids=True,
     )
     playground.run()

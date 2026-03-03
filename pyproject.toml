@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "texture"
+name = "textures"
 version = "0.0.1"
 authors = [
   { name="Marcos Pasa", email="marcos.pasa@ufrgs.br" },
