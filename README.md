@@ -8,6 +8,43 @@ Implementation of F. Graner, B. Dollet, C. Raufaste, and P. Marmottant, Discrete
 pip install -e "git+https://github.com/marcos1561/textures.git/#egg=textures"
 ```
 
+## Calculating the texture and its derivatives in grid cells
+Given a set of points (array with shape (n# of points, n# of coordinates)), and a `Grid` from the package [grids](https://github.com/marcos1561/grids), one can compute the texture and its derivatives in each grid element in the following way:
+
+1. Compute the links (see text below).
+2. Use the appropriate functions to compute the desired quantity.  
+
+### Computing links
+Links are computed creating a `LinkCfg` object, then using the `link_cfg.link_func(points)`, where `points` is the array with the points:
+
+```python
+import textures as tx
+
+points = ...
+
+# Computing links using Voronoi tesselation
+links_cfg = tx.links.VoronoiLink(max_dist=0.1) 
+links_ids = links_cfg.link_func(points)
+```
+`links_ids` is an array with shape (n# of links, 2), and the i-th link can be constructed
+as follow:
+```python
+id1, id2 = links_ids[i]
+
+link_i = points[id2] - points[id1]
+```
+
+### Computing the texture
+With the links in hands, we can compute the texture
+```python
+import texture as tx
+texture_sum, texture_count = tx.bin_texture_sum(points, links_ids, grid)
+
+# Averaging the results in each grid cell 
+texture = tx.grid_data_mean(texture_sum, texture_count)
+```
+see the functions stating with name `bin_` to compute other quantities.
+
 ## Calculators
 One can use core functions (such as `bin_texture_sum()`) to calculate tools, but this is not convenient. To provide
 a better user interface, calculators are provided inside the module `textures.calculators`.

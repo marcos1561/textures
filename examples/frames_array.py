@@ -16,6 +16,9 @@ The script:
 Optional Features:
 - Interactive slider to visualize point links and trajectories frame by frame if `show_points_links=True`
 """
+import os
+import matplotlib
+matplotlib.use(os.environ.get("MATPLOTLIB_BACKEND", "TkAgg"))
 
 import numpy as np
 import matplotlib.pyplot as plt

@@ -15,6 +15,9 @@ The example:
     - Texture heatmap overlaid on the grid
     - Grid structure with point scatter plot
 """
+import os
+import matplotlib
+matplotlib.use(os.environ.get("MATPLOTLIB_BACKEND", "TkAgg"))
 
 import numpy as np
 import matplotlib.pyplot as plt
