@@ -38,10 +38,10 @@ num_points = 30
 grid_size = 10
 dl = 0.1
 
-grid = grids.RegularGrid(
+grid = grids.RegularRectGrid(grids.RegularRectGridCfg(
     length=grid_size, height=grid_size,
     num_cols=5, num_rows=5,
-)
+))
 
 # ==
 # Creating random trajectories

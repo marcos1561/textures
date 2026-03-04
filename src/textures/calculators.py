@@ -2,7 +2,7 @@ import numpy as np
 from enum import Enum, auto
 
 import textures as tx
-from textures.grids import RegularGrid
+from grids import RectangularGrid
 from textures.links import LinkCfg
 from collections import namedtuple
 
@@ -15,7 +15,7 @@ class Tool(Enum):
     topological_rearrangement_rate = auto()
 
 class FramesArray:
-    def __init__(self, frames1: np.ndarray, frames2, grid: RegularGrid, links_cfg: LinkCfg,
+    def __init__(self, frames1: np.ndarray, frames2, grid: RectangularGrid, links_cfg: LinkCfg,
         dt: float=None, uids1: np.ndarray=None, uids2: np.ndarray=None,
         num_points_1: np.ndarray=None, num_points_2: np.ndarray=None,
     ):
@@ -151,14 +151,14 @@ if __name__ == "__main__":
     num_remove = 3 
     dl = 0.1
 
-    # grid = RegularGrid(
+    # grid = RectangularGrid(
     #     length=grid_size, height=grid_size,
     #     num_cols=5, num_rows=5,
     # )
-    grid = grids.RegularGrid(
+    grid = grids.RegularRectGrid(grids.RegularRectGridCfg(
         length=grid_size*2, height=grid_size,
         num_cols=5, num_rows=10,
-    )
+    ))
 
     frames1 = np.empty((num_frames, num_points, 2))
     frames2 = np.empty((num_frames, num_points, 2))

@@ -35,7 +35,7 @@ def draw_points_links(ax: Axes, points, links, points_kw=None, links_kw=None):
 
     return l, p
 
-def draw_count_2D(ax: Axes, grid: grids.RetangularGrid, count, colormesh_kw=None, colorbar_kw=None):
+def draw_count_2D(ax: Axes, grid: grids.RectangularGrid, count, colormesh_kw=None, colorbar_kw=None):
     "Draw count for a 2D grid as color map."
     if colormesh_kw is None:
         colormesh_kw = {}
@@ -55,7 +55,7 @@ def display_scalar(ax, grid, scalar, kw_scatter = {'marker': 'o'}):
         sc = scalar
     return ax.scatter(XY[:,0], XY[:,1], c = sc, **kw_scatter)
     
-def draw_matrices(ax: Axes, grid: grids.RetangularGrid, matrix: np.ndarray, 
+def draw_matrices(ax: Axes, grid: grids.RectangularGrid, matrix: np.ndarray, 
     scale: float=None, col=None, adjust_lims=True, 
     ellipse_kwargs=None, line_kwargs=None):
     '''

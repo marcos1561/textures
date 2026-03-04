@@ -30,11 +30,11 @@ np.random.seed(42)
 num_points = 100
 points = np.random.random((num_points, 2))
 
-grid = grids.RegularGrid(
+grid = grids.RegularRectGrid(grids.RegularRectGridCfg(
     length=1, height=1,
     num_cols=10, num_rows=10,
     center=(0.5, 0.5),
-)
+))
 
 links = tx.links.VoronoiLink(max_dist=0.1).link_func(points)
 texture_sum, texture_count = tx.bin_texture_sum(points, links, grid)

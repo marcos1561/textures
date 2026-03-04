@@ -7,9 +7,9 @@ from matplotlib.collections import LineCollection
 from matplotlib.artist import Artist
 from matplotlib.text import Text
 
-import textures
+import textures as tx
 import traceback
-from grids import RegularGrid
+from grids import RectangularGrid, RegularRectGrid, RegularRectGridCfg
 
 class Action(Enum):
     add = auto()
@@ -22,7 +22,7 @@ class MatrixType(Enum):
     topology = auto()
 
 class Frame:
-    def __init__(self, ax: Axes, grid: RegularGrid, init_pos=None):
+    def __init__(self, ax: Axes, grid: RectangularGrid, init_pos=None):
         self.ax = ax
         self.points_mpl: list[Line2D] = []
         self.uids = []
@@ -102,7 +102,7 @@ class Frame:
             self.links_col.set_segments(np.empty((0, 2)))
 
     def get_links(self, points):
-        return texture.links_from_voronoi(points, self.grid.size[0]/3)
+        return tx.links_from_voronoi(points, self.grid.size[0]/3)
 
     def get_points_array(self):
         points = np.empty((len(self.points_mpl), 2), dtype=float)
@@ -163,13 +163,13 @@ class MatrixView:
             if frame.links is None or frame.links.shape[0] == 0 or frame.points.shape[0] == 0:
                 continue
 
-            sum_m, count = texture.bin_texture_sum(frame.points, frame.links, frame.grid)
-            m = texture.grid_data_mean(sum_m, count)
+            sum_m, count = tx.bin_texture_sum(frame.points, frame.links, frame.grid)
+            m = tx.grid_data_mean(sum_m, count)
             
             self.draw_matrix(m, frame, scale=1)
     
     def update_geometry(self):
-        p1, p2 = texture.data_in_both_frames(
+        p1, p2 = tx.data_in_both_frames(
             self.frames[0].points, self.frames[1].points,
             self.frames[0].uids, self.frames[1].uids,
         )
@@ -180,22 +180,22 @@ class MatrixView:
         except Exception as e:
             return
 
-        links_ids = texture.links_intersect_same_points(links_1, links_2)
+        links_ids = tx.links_intersect_same_points(links_1, links_2)
 
-        sum_C, _ = texture.bin_geometrical_changes_sum(
+        sum_C, _ = tx.bin_geometrical_changes_sum(
             p1, p2, links_ids, 0.01, self.frames[0].grid
         )
-        sum_B = texture.B_from_C(sum_C)
+        sum_B = tx.B_from_C(sum_C)
         
-        count = texture.bin_count(p1, links_ids, self.frames[0].grid)
+        count = tx.bin_count(p1, links_ids, self.frames[0].grid)
 
-        B = texture.grid_data_mean(sum_B, count)
+        B = tx.grid_data_mean(sum_B, count)
 
         for f in self.frames:
             self.draw_matrix(B, f)
     
     def update_topology(self):
-        p1, p2 = texture.data_in_both_frames(
+        p1, p2 = tx.data_in_both_frames(
             self.frames[0].points, self.frames[1].points,
             self.frames[0].uids, self.frames[1].uids,
         )
@@ -207,7 +207,7 @@ class MatrixView:
             return
 
         try:
-            sum_T, *_ = texture.bin_topological_changes_sum(
+            sum_T, *_ = tx.bin_topological_changes_sum(
                 p1, p2, l1, l2, 0.01, self.frames[0].grid
             )
         except Exception as e:
@@ -215,9 +215,9 @@ class MatrixView:
             traceback.print_exc()
             return
 
-        count = texture.bin_count(p1, l1, self.frames[0].grid)
+        count = tx.bin_count(p1, l1, self.frames[0].grid)
 
-        T = texture.grid_data_mean(sum_T, count)
+        T = tx.grid_data_mean(sum_T, count)
 
         for f in self.frames:
             self.draw_matrix(T, f)
@@ -225,12 +225,12 @@ class MatrixView:
     def draw_matrix(self, matrix, frame: Frame, scale=None):
         idx = self.frames.index(frame)
         try:
-            ellipse, lines = texture.display.draw_matrices(
+            ellipse, lines = tx.display.draw_matrices(
                 frame.ax, frame.grid, matrix, 
                 adjust_lims=False,
                 scale=scale,
             )
-        except texture.errors.AllMatricesNullError as e:
+        except tx.errors.AllMatricesNullError as e:
             return
 
         if self.ellipse_artists[idx] is not None:
@@ -279,7 +279,7 @@ class PlayGround:
         self.buttons[0].on_clicked(lambda e, o=1, d=0: self.copy_frame(o, d))
         self.buttons[1].on_clicked(lambda e, o=0, d=1: self.copy_frame(o, d))
 
-        grid = RegularGrid(10, 10, 1, 1)
+        grid = RegularRectGrid(RegularRectGridCfg(10, 10, 1, 1))
 
         self.frames = [
             Frame(self.links_axs[0], grid, init_points_1), 

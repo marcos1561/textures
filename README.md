@@ -30,7 +30,6 @@ links_ids = links_cfg.link_func(points)
 as follow:
 ```python
 id1, id2 = links_ids[i]
-
 link_i = points[id2] - points[id1]
 ```
 
@@ -43,27 +42,25 @@ texture_sum, texture_count = tx.bin_texture_sum(points, links_ids, grid)
 # Averaging the results in each grid cell 
 texture = tx.grid_data_mean(texture_sum, texture_count)
 ```
-see the functions stating with name `bin_` to compute other quantities.
+see the functions stating with `bin_` to compute other quantities.
 
 ## Calculators
-One can use core functions (such as `bin_texture_sum()`) to calculate tools, but this is not convenient. To provide
+One can use core functions (such as `bin_texture_sum()` in the section above) to calculate tools, but this is not convenient. To provide
 a better user interface, calculators are provided inside the module `textures.calculators`.
 
 ### FramesArray Calculator
-If you have a list of frames (a frame is a list of points) and want to do an average between all frames, `FramesArray` is the
-calculator for you. In the following example, all tools are calculated for a list of frames (doing an average for all frames), 
-for every grid element of the grid created, and the resulting texture is shown. 
+If you have a list of frames (a frame is a list of points) and want to do an average between all frames, `FramesArray` is the calculator for you. In the following example, all tools are calculated for a list of frames (doing an average over all frames), for every grid element, and the resulting texture is shown. 
 ```python
 import matplotlib.pyplot as plt
 import grids
 from textures import calculators, links, display
 
-# suppose i've loaded frames1 and frames2 here
+# Suppose I have loaded frames1 and frames2 here.
 
-grid = grids.RegularGrid(
+grid = grids.RegularRectGridCfg(
     length=10, height=10,
     num_cols=5, num_rows=5,
-)
+).get_grid()
 
 calc = calculators.FramesArray(
     frames1, frames2, grid, 
@@ -75,6 +72,7 @@ r = calc.calculate()
 display.draw_matrices(plt.gca(), calc.grid, r.M)
 plt.show()
 ```
+see also the example [playground.py](./examples/playground.py).
 
 ## Playground
 The playground is an application to play with the texture and its derivatives in an interactive way. It consists

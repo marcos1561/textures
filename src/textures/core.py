@@ -1,16 +1,8 @@
 import numpy as np
 from numba import guvectorize
 
-from grids import RegularGrid
-from textures import grids_mathieu
+from grids import Grid
 from textures.links import *
-
-def mine_to_mathieu_grid(grid: RegularGrid):
-    return grids_mathieu.RegularGrid(
-            offsets=[-s/2 for s in grid.size],
-            steps=grid.cell_size,
-            nsteps=grid.shape,
-        )
 
 #==
 # Frame data
@@ -109,7 +101,7 @@ def leastsq(A,B):
     """Compute element by element the least square solution to Ax=B"""
     return np.linalg.lstsq(A,B, rcond=1e-3)[0]
 
-def bin_count(points: np.ndarray, links_ids: np.ndarray, grid: RegularGrid, points_per_link=3):
+def bin_count(points: np.ndarray, links_ids: np.ndarray, grid: Grid, points_per_link=3):
     '''
     Count how many links there is in each grid element.
     '''
@@ -137,7 +129,7 @@ def parameter_range_across_link(points_per_bond, one_point_pos=0.5):
         t = np.array([one_point_pos])
     return t
 
-def bin_texture_sum(points: np.ndarray, links_ids: np.ndarray, grid: RegularGrid, points_per_link=3):
+def bin_texture_sum(points: np.ndarray, links_ids: np.ndarray, grid: Grid, points_per_link=3):
     '''
     Bin texture tensor on a grid.
     
@@ -241,7 +233,7 @@ def bin_texture_sum(points: np.ndarray, links_ids: np.ndarray, grid: RegularGrid
     return sum_textures, count
 
 def bin_geometrical_changes_sum(points_0: np.ndarray, points_1: np.ndarray, links_ids: np.ndarray, dt: float,
-    grid: RegularGrid, points_per_link=3):
+    grid: Grid, points_per_link=3):
     """
     Bin geometrical changes of the texture tensor between two times on a grid. 
     It is based on links which exist at both times.
@@ -356,7 +348,7 @@ def bin_geometrical_changes_sum(points_0: np.ndarray, points_1: np.ndarray, link
 def bin_topological_changes_sum(
     points_0: np.ndarray, points_1: np.ndarray, 
     links_ids_0: np.ndarray, links_ids_1: np.ndarray, 
-    dt:float, grid: RegularGrid, points_per_link=3):
+    dt:float, grid: Grid, points_per_link=3):
     '''
     Bin on a grid topological changes of the texture tensor between two frames. 
     It is based on links which appeared or disappeared between both frames.
@@ -424,7 +416,7 @@ def bin_topological_changes_sum(
     
     return (sum_texture_a - sum_texture_d)/dt, count_a, count_d
     
-def bin_changes(pos0, pos1, pairs0, pairs1, grid, points_per_bond=3):
+def bin_changes(pos0, pos1, pairs0, pairs1, grid: Grid, points_per_bond=3):
     """bin on a grid geometrical and topological changes of the texture tensor between two times.
     Caution: intensive matrices C and T are obtained by dividing sumC and sumT of the present function by the count of bin_texture (averaged between t0 and t1).
     
@@ -444,7 +436,7 @@ def bin_changes(pos0, pos1, pairs0, pairs1, grid, points_per_bond=3):
     counta: the number of appearing matrices binned in each grid element. Each end of an appearing bond, as well as intermediate points, at t1 counts for 1.
     countd: the number of disappearing matrices binned in each grid element. Each end of a disappearing bond, as well as intermediate points, at t0 counts for 1.
     """
-    assert pos0.shape[1] == grid.ndim
+    assert pos0.shape[1] == grid.num_dims
     assert pos0.shape[0] == pos1.shape[0]
     assert pos0.shape[1] == pos1.shape[1]
     #bonds that appeared, disappeared, or were conserved between t0 and t1
@@ -550,7 +542,7 @@ def statistical_topological_rearrangement_rate(M: np.ndarray, T: np.ndarray, inv
     
     return P
 
-def statistical_relative_deformations(M,C,T):
+def statistical_relative_deformations(M, C, T):
     """Computes the statistical velocity gradient V,  the statistical rotation rate Omega and the statistical topological rearrangement rate P from the texture matrix M, matrix C and topological change matrix T. Keeps only independant coefficients."""
     W = leastsq(square_from_triangular(M), C)
     v = (W + np.swapaxes(W, -1, -2)) / 2
